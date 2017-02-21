@@ -1,0 +1,74 @@
+public class CustomerTestProgram {
+	public static void main(String args[]) {
+  
+		// Create some phone objects
+		CellPhone iPhone = new CellPhone("iPhone 6Plus", "Apple", 12, 915.00f);
+		CellPhone galaxy = new CellPhone("Galaxy S7", "Samsung", 18, 900.00f);
+		CellPhone priv = new CellPhone("PRIV", "BlackBerry", 12, 890.00f);
+
+		Customer rob = new Customer("Rob Banks", iPhone, new PhonePlan(200, 2500000, false));
+		Customer april = new Customer("April Rain", galaxy, new PhonePlan(200, 1000000, true));
+		Customer rita = new Customer("Rita Book", priv, new PhonePlan(100, 500000, false));
+		Customer sue = new Customer("Sue Permann", iPhone, new PhonePlan(100, 2500000, false));
+		Customer tim = new Customer("Tim Bur", iPhone, new PhonePlan(30, 0, true));
+    
+		// Show the Customers
+		System.out.println("Here are the customers:");
+		System.out.println(rob);
+		System.out.println(april);
+		System.out.println(rita);
+		System.out.println(sue);
+		System.out.println(tim);
+    
+		rob.phone(sue, 12); // a 12 minute call from Rob's phone to Sue's phone
+		rita.phone(april, 27);
+		rob.phone(tim, 3);
+		tim.phone(rita, 19);
+
+		tim.phone(sue, 8);
+
+		System.out.println("Rob's minutes = " + rob.CellPlan.getMinutesRemaining());
+		System.out.println("April's minutes = "+ april.CellPlan.getMinutesRemaining());
+		System.out.println("Rita's minutes = " + rita.CellPlan.getMinutesRemaining());
+		System.out.println("Sue's minutes = " + sue.CellPlan.getMinutesRemaining());
+		System.out.println("Tim's minutes = " + tim.CellPlan.getMinutesRemaining());
+
+		rob.phone(tim, 1); 
+		rob.phone(sue, 1);
+		sue.phone(tim, 1); 
+    
+		tim.buyMinutes(100);
+		
+		System.out.println("Tim's minutes = " + tim.CellPlan.getMinutesRemaining());
+		
+		tim.phone(rob, 24); // OK now rob.phone(sue, 15);
+		sue.phone(tim, 68); // Sue's limit will exceed and she must pay extra
+		rita.phone(sue, 65); // Both customers exceed their minutes and must pay extra
+		
+		System.out.println("Rob's minutes = " + rob.CellPlan.getMinutesRemaining());
+		System.out.println("April's minutes = "+ april.CellPlan.getMinutesRemaining());
+		System.out.println("Rita's minutes = " + rita.CellPlan.getMinutesRemaining());
+		System.out.println("Sue's minutes = " + sue.CellPlan.getMinutesRemaining());
+		System.out.println("Tim's minutes = " + tim.CellPlan.getMinutesRemaining());
+		
+		rob.accessInternet(45600); // used up 45.6MB
+		rita.accessInternet(2700000); // use up 2.7GB
+		rob.accessInternet(1200000); // use up 1.2GB
+		tim.accessInternet(10000); // attempt to use 10MB ... won't work
+		sue.accessInternet(2500000); // used up exactly 2.5GB
+		april.accessInternet(1900000); // attempt to use 1.9GB, only 1GB used, then stops
+		
+		System.out.println("Rob's data = " + rob.CellPlan.getDataRemaining() + "KB");
+		System.out.println("April's data = "+ april.CellPlan.getDataRemaining() + "KB");
+		System.out.println("Rita's data = " + rita.CellPlan.getDataRemaining() + "KB");
+		System.out.println("Sue's data = " + sue.CellPlan.getDataRemaining() + "KB");
+		System.out.println("Tim's data = " + tim.CellPlan.getDataRemaining() + "KB");
+		// Pretend that the month is over and print out all of the billing statements
+
+		rob.printMonthlyStatement();
+		april.printMonthlyStatement();
+		rita.printMonthlyStatement();
+		sue.printMonthlyStatement();
+		tim.printMonthlyStatement();
+	}
+} 
