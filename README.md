@@ -1,4 +1,18 @@
-# Customer
-first program i made in class - java
+# Cellphone
+public class CellPhone {
+	String model, manufacturer;
+	private int monthsOfWarranty;
+	private float price;
 
-this is a program that takes the cellphone usage information of the clients and submits it as bills.
+	public CellPhone(String mo, String ma, int MoW, float p){
+		model = mo;
+		manufacturer = ma;
+		monthsOfWarranty = MoW;
+		price = p;
+	}
+	public String getModel(){return model;}
+	public String getManufacturer(){return manufacturer;}
+	public int getMonthsOfWarranty(){return monthsOfWarranty;}
+	public float getPrice(){return price;}
+}
+
