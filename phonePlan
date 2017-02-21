@@ -1,0 +1,88 @@
+
+public class PhonePlan {
+
+	public int MinutesAllowed, MinutesUsed, MinutesRemaining, DataAllowed, DataUsed, DataRemaining;
+	public String PlanType;
+	public boolean whatPlanType;
+	public float dataOverusageCharges = 0f;
+
+	public PhonePlan(int minutesAllowed, int minutesUsed, int dataAllowed, int dataUsed, boolean planType) {
+
+		MinutesAllowed = minutesAllowed;
+		MinutesUsed = minutesUsed;
+
+		DataAllowed = dataAllowed;
+
+
+		DataUsed = dataUsed;
+
+		if (planType) {
+			PlanType = "Pay-as-you-go";
+			whatPlanType = true;
+		}
+		if (!planType) {
+			PlanType = "Regular";
+			whatPlanType = false;
+		}
+	}
+
+	public PhonePlan(int minutesAllowed, int dataAllowed, boolean planType) {
+		MinutesAllowed = minutesAllowed;
+		MinutesUsed = 0;
+		DataAllowed = dataAllowed;
+		DataUsed = 0;
+		if (planType)
+		{
+			PlanType = "Pay-as-you-go";
+			whatPlanType = true;
+		}
+		if (!planType) {
+			PlanType = "Regular";
+			whatPlanType = false;
+		}
+	}
+
+	public String getPlanType() {
+		return PlanType;
+	}
+
+	public int getMinutesAllowed() {
+		return MinutesAllowed;
+	}
+
+	public int getMinutesUsed(){return MinutesUsed;}
+
+	public int getMinutesRemaining() {
+		MinutesRemaining = MinutesAllowed - MinutesUsed;
+
+		return MinutesRemaining;
+	}
+
+	public int getDataAllowed() {
+		return DataAllowed;
+	}
+
+	public int getDataUsed(){
+		return DataAllowed - DataRemaining;
+	}
+
+	public int getDataRemaining() {
+		DataRemaining = DataAllowed - DataUsed;
+		if (whatPlanType) {
+
+			if (DataRemaining <= 0) {
+				DataRemaining = 0;
+			}
+		}
+		return DataRemaining;
+
+	}
+
+	public float getDataOverUsage(){
+		if ((getDataAllowed() - getDataUsed()) < 0){
+			dataOverusageCharges = Math.abs(getDataAllowed() - getDataUsed()) * 0.000_05f;
+		}
+		return dataOverusageCharges;
+	}
+
+}
