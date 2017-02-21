@@ -1,4 +1,4 @@
-# Cellphone
+
 
 public class CellPhone {
 	String model, manufacturer;
