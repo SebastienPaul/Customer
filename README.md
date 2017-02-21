@@ -1,4 +1,5 @@
 # Cellphone
+
 public class CellPhone {
 	String model, manufacturer;
 	private int monthsOfWarranty;
