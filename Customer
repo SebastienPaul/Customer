@@ -1,0 +1,177 @@
+#customer
+public class Customer{
+	float overVoiceCharges, monthlyBalance, totalBalance, HST;
+	int numberOfCalls = 0, minutesUsedperson1, minutesUsedperson2;
+	String Name;
+	CellPhone Company;
+	PhonePlan CellPlan;
+
+	public Customer (String name, CellPhone company, PhonePlan phonePlan, int callsMade, float balance){
+		Name = name;
+		Company = company;
+		CellPlan = phonePlan;
+		numberOfCalls = callsMade;
+
+		numberOfCalls = callsMade;
+		if (CellPlan.getPlanType() == "Pay-as-you-go")
+			monthlyBalance = monthlyBalance + (0.40f * this.CellPlan.MinutesAllowed);
+		if (CellPlan.getPlanType() == "Regular") {
+			if (this.CellPlan.MinutesAllowed == 100)
+				monthlyBalance = monthlyBalance + 15;
+			if (this.CellPlan.MinutesAllowed == 200)
+				monthlyBalance = monthlyBalance + 25;
+			monthlyBalance = monthlyBalance + (10 * (this.CellPlan.getDataAllowed()/1_000_000f));
+			monthlyBalance = monthlyBalance + 0.40f * numberOfCalls;
+		}
+	}
+	public Customer (String name, CellPhone company, PhonePlan phonePlan){
+		Name = name;
+		Company = company;
+		CellPlan = phonePlan;
+
+		if (CellPlan.getPlanType() == "Pay-as-you-go")
+			monthlyBalance = monthlyBalance + (0.40f * this.CellPlan.MinutesAllowed);
+		if (CellPlan.getPlanType() == "Regular") {
+			if (this.CellPlan.MinutesAllowed == 100)
+				monthlyBalance = monthlyBalance + 15;
+			if (this.CellPlan.MinutesAllowed == 200)
+				monthlyBalance = monthlyBalance + 25;
+			this.monthlyBalance = this.monthlyBalance + (10 * (this.CellPlan.getDataAllowed()/1_000_000f));
+			this.monthlyBalance = this.monthlyBalance + 0.40f * numberOfCalls;
+		}
+	}
+	public void phone (Customer calling, int callLength){
+		minutesUsedperson1 = this.CellPlan.MinutesUsed;
+		minutesUsedperson2 = calling.CellPlan.MinutesUsed;
+		if (callLength > calling.CellPlan.getMinutesRemaining()){
+			//you are here :D
+			//i am not sure about this part of the code
+			minutesUsedperson1 = minutesUsedperson1 + (callLength - 1);
+			minutesUsedperson2 = minutesUsedperson2 + (callLength);
+
+			this.CellPlan.MinutesUsed = minutesUsedperson1;
+			calling.CellPlan.MinutesUsed = minutesUsedperson2;
+
+			calling.numberOfCalls ++;
+
+
+			overVoiceCharges = overVoiceCharges + (0.15f * this.CellPlan.MinutesRemaining );
+
+			if (calling.CellPlan.MinutesRemaining >= 0)
+				overVoiceCharges = overVoiceCharges - (0.15f * this.CellPlan.MinutesRemaining);
+
+		}
+		if (callLength <= calling.CellPlan.getMinutesRemaining()){
+
+			minutesUsedperson1 = minutesUsedperson1 + callLength;
+			minutesUsedperson2 = minutesUsedperson2 + callLength;
+
+			this.CellPlan.MinutesUsed = minutesUsedperson1;
+			calling.CellPlan.MinutesUsed = minutesUsedperson2;
+
+			this.numberOfCalls ++;
+			calling.numberOfCalls ++;
+		}
+	}
+	public void buyMinutes(int minutesBought){
+		if (this.CellPlan.getPlanType() == "Pay-as-you-go"){
+			monthlyBalance = monthlyBalance + minutesBought * 0.40f;
+			this.CellPlan.MinutesAllowed = this.CellPlan.MinutesAllowed + minutesBought;
+		}
+		else{
+			this.CellPlan.MinutesAllowed = this.CellPlan.MinutesAllowed + minutesBought;
+		}
+
+	}
+	public String getName(){return Name;}
+	public void accessInternet(int dataUsedforInternet) {
+		this.CellPlan.DataUsed = this.CellPlan.DataUsed + dataUsedforInternet;
+	}
+
+	public void printMonthlyStatement(){
+
+		System.out.println("\n");
+		if (this.CellPlan.getPlanType() == "Pay-as-you-go") {
+
+			if (this.Name == "Tim Bur")
+				System.out.printf("%1s %31s %n", "Name:", Name);
+			else
+				System.out.printf("%1s %34s %n", "Name:", Name);
+
+
+			System.out.printf("%1s %32s %n", "Plan Type:", this.CellPlan.getPlanType());
+
+			if (this.CellPlan.getMinutesUsed() < 100)
+				System.out.printf("%1s %18s %n", "Minutes Used:", this.CellPlan.getMinutesUsed());
+			else
+				System.out.printf("%1s %19s %n", "Minutes Used:", this.CellPlan.getMinutesAllowed() - this.CellPlan.getMinutesRemaining());
+
+			if (this.CellPlan.getMinutesRemaining() > 100)
+				System.out.printf("%1s %14s %n", "Minutes Remaining:", this.CellPlan.getMinutesRemaining());
+			else
+				System.out.printf("%1s %12s %n", "Minutes Remaining:", this.CellPlan.getMinutesRemaining());
+			if (this.CellPlan.getDataUsed() < 100)
+				System.out.printf("%1s %20s %n", "Data Used:", this.CellPlan.getDataUsed());
+			else
+				System.out.printf("%1s %26s %n", "Data Used:", this.CellPlan.getDataAllowed() - this.CellPlan.getDataRemaining());
+			System.out.printf("%1s %15s %n", "Data Remaining:", this.CellPlan.getDataRemaining());
+			System.out.printf("%1s %19s %n", "Calls Made:", this.numberOfCalls);
+			System.out.printf("%1s %14s", "Monthly Charges:", "$");
+			System.out.printf("%.2f %n", this.monthlyBalance);
+			System.out.printf("%1s %26s", "HST:", "$");
+			this.totalBalance = this.monthlyBalance + this.overVoiceCharges + this.CellPlan.dataOverusageCharges;
+			this.HST = this.totalBalance * 0.13f;
+			this.totalBalance = this.totalBalance + this.HST;
+			System.out.printf("%.2f %n", this.HST);
+			System.out.printf("%1s %20s", "Total Due:", "$");
+			System.out.printf("%.2f %n", this.totalBalance);
+
+
+
+		}
+		else {
+			if (this.Name == "Sue Permann" ) {
+				System.out.printf("%1s %35s %n", "Name:", Name);
+			}
+			else {
+				System.out.printf("%1s %33s %n", "Name:", Name);
+			}
+			System.out.printf("%1s %26s", "Plan Type:", this.CellPlan.getPlanType());
+			System.out.println(" Monthly (" + this.CellPlan.getMinutesAllowed() + " minutes, " + this.CellPlan.getDataAllowed() / 1_000_000f + "GB data)");
+			if (this.CellPlan.getMinutesAllowed() - this.CellPlan.getDataRemaining() < 100)
+				System.out.printf("%1s %18s %n", "Minutes Used:", this.CellPlan.MinutesUsed);
+			else
+				System.out.printf("%1s %19s %n", "Minutes Used:", this.CellPlan.MinutesUsed);
+
+			System.out.printf("%1s %26s %n", "Data Used:", this.CellPlan.getDataAllowed() - this.CellPlan.getDataRemaining());
+			System.out.printf("%1s %19s %n", "Calls Made:", this.numberOfCalls);
+			System.out.printf("%1s %14s", "Monthly Charges:", "$");
+			System.out.printf("%.2f %n", this.monthlyBalance);
+			System.out.printf("%1s %7s", "Voice Overtime Charges:", "$");
+			System.out.printf("%.2f %n",this.overVoiceCharges);
+
+
+			System.out.printf("%1s %7s", "Data Overusage Charges:", "$");
+			System.out.printf("%.2f %n",this.CellPlan.getDataOverUsage());
+			System.out.printf("%1s %26s", "HST:", "$");
+			this.totalBalance = this.monthlyBalance + this.overVoiceCharges + this.CellPlan.dataOverusageCharges;
+			this.HST = this.totalBalance * 0.13f;
+			this.totalBalance = this.totalBalance + this.HST;
+			System.out.printf("%.2f %n", this.HST);
+			System.out.printf("%1s %20s", "Total Due:", "$");
+			System.out.printf("%.2f %n", this.totalBalance);
+
+
+		}
+	}
+	public String toString(){
+		if (CellPlan.getPlanType() == "Pay-as-you-go")
+			return (getName() + " with a " + Company.getManufacturer() + " " + Company.getModel() + " on a " + CellPlan.getPlanType() + " Plan with " + CellPlan.getMinutesRemaining() + " minutes and " + CellPlan.getDataRemaining() + "KB remaining.");
+		if (CellPlan.getPlanType() == "Regular")
+			return(getName() + " with a " + Company.getManufacturer() + " " + Company.getModel() + " on a " + CellPlan.getPlanType() + " (" + CellPlan.getMinutesAllowed() + " minute, " + CellPlan.getDataAllowed()/1_000_000f + "GB data) Monthly Plan with " + CellPlan.getMinutesRemaining() + " minutes remaining and " + CellPlan.getDataRemaining() + "KB remaining");
+		else
+			return("");
+	}
+
+
+}
